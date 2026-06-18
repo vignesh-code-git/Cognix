@@ -29,9 +29,10 @@ export async function POST(req) {
     // 3. Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Using gemini-2.5-flash as the default for fast and optimized chat completions
+    // Using configurable model (defaulting to stable gemini-1.5-flash to bypass 2.5 limits)
+    const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: modelName,
       systemInstruction:
         "You are Cognix, an ultra-premium, professional, and sophisticated AI assistant. " +
         "You possess advanced cognitive reasoning, coding, and creative capabilities. " +
