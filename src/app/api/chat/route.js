@@ -28,11 +28,11 @@ export async function POST(req) {
 
     // 3. Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(apiKey);
-    
+
     // Using gemini-2.5-flash as the default for fast and optimized chat completions
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
-      systemInstruction: 
+      systemInstruction:
         "You are Cognix, an ultra-premium, professional, and sophisticated AI assistant. " +
         "You possess advanced cognitive reasoning, coding, and creative capabilities. " +
         "Your style is modern, direct, polite, and intellectually engaging. " +
@@ -81,7 +81,7 @@ export async function POST(req) {
         );
         if (retryInfo?.retryDelay) retryDelay = retryInfo.retryDelay;
       }
-    } catch (_) {}
+    } catch (_) { }
 
     return Response.json(
       {

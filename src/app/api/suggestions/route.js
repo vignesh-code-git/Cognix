@@ -34,7 +34,7 @@ export async function GET() {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const systemPrompt = 
+    const systemPrompt =
       "You are a state-of-the-art AI developer suggestions generator. " +
       "Generate exactly 4 highly advanced, latest AI-related topics or developer concepts for an AI software engineering workspace. " +
       "These topics must be extremely relevant to modern AI engineering (e.g. multi-agent systems, local LLM fine-tuning, RAG retrieval techniques, vector databases, neural search, context windows, quantization, etc.). " +

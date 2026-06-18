@@ -232,26 +232,26 @@ export default function Home() {
   ]);
   const [activeConversationId, setActiveConversationId] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Flag to track client-side mounting to prevent SSR hydration mismatches
   const [isMounted, setIsMounted] = useState(false);
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Dynamic Randomized Suggestions State
   const [suggestions, setSuggestions] = useState([]);
-  
+
   // Voice Input Audio State
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState(null);
-  
+
   // Collapse & Toggle State
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  
+
   const [apiKeyError, setApiKeyError] = useState(null);
-  
+
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -359,7 +359,7 @@ export default function Home() {
           ))
         );
       });
-      
+
       if (!isInteractive && textareaRef.current) {
         setTimeout(() => {
           if (textareaRef.current) {
@@ -433,7 +433,7 @@ export default function Home() {
       } else {
         setSidebarCollapsed(false);
       }
-      
+
       if (window.innerWidth > 768) {
         setMobileSidebarOpen(false);
       }
@@ -468,7 +468,7 @@ export default function Home() {
     };
 
     const updatedMessages = [...messages, userMessage];
-    
+
     // Automatically derive the tab heading from the very first message text
     let newTitle = activeConv.title;
     if (messages.length === 0) {
@@ -484,7 +484,7 @@ export default function Home() {
           : c
       )
     );
-    
+
     setInputValue("");
     setIsLoading(true);
 
@@ -815,7 +815,7 @@ You have reached the limits of the free standard developer tier.
           const headingContent = headingMatch[2];
           const fontSize = level === 1 ? "1.45rem" : level === 2 ? "1.25rem" : level === 3 ? "1.1rem" : "1.0rem";
           const marginTop = level === 1 ? "1.8rem" : level === 2 ? "1.5rem" : level === 3 ? "1.2rem" : "1.0rem";
-          
+
           elements.push(
             <div
               key={`h-${i}`}
@@ -870,7 +870,7 @@ You have reached the limits of the free standard developer tier.
           aria-label="Close sidebar overlay"
         />
       )}
-      
+
       <aside className={`${styles.sidebar} ${(sidebarCollapsed && !mobileSidebarOpen) ? styles.sidebarCollapsed : ""} ${mobileSidebarOpen ? styles.sidebarOpen : ""}`}>
         <div>
           {/* Header */}
@@ -949,7 +949,7 @@ You have reached the limits of the free standard developer tier.
                         <SparkleIcon size={22} />
                       </span>
                       <span className={styles.tabText}>{conv.title}</span>
-                      
+
                       {/* Delete individual chat tab close option (Always visible, clears if it is the only tab) */}
                       <button
                         className={styles.tabDeleteBtn}
@@ -1062,9 +1062,8 @@ You have reached the limits of the free standard developer tier.
               messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`${styles.messageRow} ${
-                    msg.role === "user" ? styles.messageRowUser : styles.messageRowModel
-                  }`}
+                  className={`${styles.messageRow} ${msg.role === "user" ? styles.messageRowUser : styles.messageRowModel
+                    }`}
                 >
                   {msg.role === "user" ? (
                     // User Message Bubble (pill background, aligned right)
@@ -1136,7 +1135,7 @@ You have reached the limits of the free standard developer tier.
                 id="input-prompt"
                 autoFocus={true}
               />
-              
+
               <div className={styles.inputActions}>
                 <button
                   className={`${styles.iconBtn} ${isListening ? styles.micListeningBtn : ""}`}
@@ -1158,14 +1157,14 @@ You have reached the limits of the free standard developer tier.
                 </button>
               </div>
             </div>
-            
+
             <div className={styles.inputMeta}>
               Cognix can make mistakes. Verify important info.
             </div>
           </div>
         </footer>
       </main>
-      
+
       {/* Mobile Sidebar click overlay backdrop */}
       {mobileSidebarOpen && (
         <div
