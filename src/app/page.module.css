@@ -1627,13 +1627,9 @@
   height: 100%;
 }
 
-.spinnerIcon {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #ffffff;
-  border-radius: 50%;
+.spinnerIconAnimating {
   animation: spin 0.8s linear infinite;
+  transform-origin: center;
 }
 
 @keyframes spin {

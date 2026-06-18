@@ -1085,31 +1085,24 @@ You have reached the limits of the free standard developer tier.
               }}
             >
               <div className={styles.pullToRefreshSpinner}>
-                {isRefreshing ? (
-                  <span className={styles.spinnerIcon} />
-                ) : (
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    style={{
-                      transform: `rotate(${pullDistance * 4}deg)`,
-                      transition: "transform 0.1s ease"
-                    }}
-                  >
-                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-                  </svg>
-                )}
-                <span>
-                  {isRefreshing
-                    ? "Refreshing suggestions..."
-                    : pullDistance >= 50
-                      ? "Release to refresh"
-                      : "Pull down to refresh"}
-                </span>
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={isRefreshing ? styles.spinnerIconAnimating : ""}
+                  style={!isRefreshing ? {
+                    transform: `rotate(${pullDistance * 4}deg)`,
+                    transition: "transform 0.1s ease"
+                  } : undefined}
+                >
+                  <path d="M23 4v6h-6" />
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                </svg>
               </div>
             </div>
           )}
