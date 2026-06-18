@@ -252,6 +252,57 @@ export default function Home() {
 
   const [apiKeyError, setApiKeyError] = useState(null);
 
+  // Pull to refresh states
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const touchStartRef = useRef(null);
+  const chatFeedRef = useRef(null);
+
+  const handleTouchStart = (e) => {
+    // Only allow pull-to-refresh on mobile/tablet screen widths
+    if (typeof window !== "undefined" && window.innerWidth > 1024) return;
+    // Only pull to refresh if we are at the very top of the scroll container
+    if (chatFeedRef.current && chatFeedRef.current.scrollTop === 0 && !isRefreshing) {
+      touchStartRef.current = e.touches[0].clientY;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (touchStartRef.current === null) return;
+
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - touchStartRef.current;
+
+    // Only handle pull down (diff > 0)
+    if (diff > 0) {
+      // Apply a resistance factor so it feels natural
+      const pull = Math.min(80, diff * 0.4);
+      setPullDistance(pull);
+
+      // Prevent browser default bounce/scroll behavior during active pull
+      if (diff > 10) {
+        if (e.cancelable) e.preventDefault();
+      }
+    }
+  };
+
+  const handleTouchEnd = async () => {
+    if (touchStartRef.current === null) return;
+
+    const wasPulledFarEnough = pullDistance >= 50;
+    touchStartRef.current = null;
+    setPullDistance(0);
+
+    if (wasPulledFarEnough) {
+      setIsRefreshing(true);
+      await refreshSuggestions();
+      // Keep loader visible briefly for smooth transition
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 800);
+    }
+  };
+
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -296,42 +347,42 @@ export default function Home() {
   const messages = activeConv.messages;
 
   // Fetch live suggestion cards from Gemini in real-time on mount/refresh
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        const res = await fetch("/api/suggestions");
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length === 4) {
-            // Map the dynamic JSON category to matching visual SVG icons
-            const mapped = data.map((item) => {
-              let iconElement = <CompassIcon size={20} />;
-              if (item.category === "code") {
-                iconElement = <CodeIcon size={20} />;
-              } else if (item.category === "idea") {
-                iconElement = <BulbIcon size={20} />;
-              } else if (item.category === "book") {
-                iconElement = <BookIcon size={20} />;
-              }
-              return {
-                icon: iconElement,
-                prompt: item.prompt,
-              };
-            });
-            setSuggestions(mapped);
-            return;
-          }
+  const refreshSuggestions = async () => {
+    try {
+      const res = await fetch("/api/suggestions");
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length === 4) {
+          // Map the dynamic JSON category to matching visual SVG icons
+          const mapped = data.map((item) => {
+            let iconElement = <CompassIcon size={20} />;
+            if (item.category === "code") {
+              iconElement = <CodeIcon size={20} />;
+            } else if (item.category === "idea") {
+              iconElement = <BulbIcon size={20} />;
+            } else if (item.category === "book") {
+              iconElement = <BookIcon size={20} />;
+            }
+            return {
+              icon: iconElement,
+              prompt: item.prompt,
+            };
+          });
+          setSuggestions(mapped);
+          return;
         }
-      } catch (err) {
-        console.warn("Failed to fetch live suggestions from Gemini API. Falling back to local randomized pool.", err);
       }
+    } catch (err) {
+      console.warn("Failed to fetch live suggestions from Gemini API. Falling back to local randomized pool.", err);
+    }
 
-      // Safe client-side fallback to random shuffle from the pre-defined local pool
-      const shuffled = [...AI_POOL].sort(() => 0.5 - Math.random());
-      setSuggestions(shuffled.slice(0, 4));
-    };
+    // Safe client-side fallback to random shuffle from the pre-defined local pool
+    const shuffled = [...AI_POOL].sort(() => 0.5 - Math.random());
+    setSuggestions(shuffled.slice(0, 4));
+  };
 
-    fetchSuggestions();
+  useEffect(() => {
+    refreshSuggestions();
   }, []);
 
   // Keep the input text field always focused and active (even when clicking outside empty areas)
@@ -1016,7 +1067,53 @@ You have reached the limits of the free standard developer tier.
         </header>
 
         {/* Scrollable conversation pane */}
-        <section className={styles.chatFeed}>
+        <section
+          className={styles.chatFeed}
+          ref={chatFeedRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Pull to Refresh Indicator */}
+          {(pullDistance > 0 || isRefreshing) && (
+            <div
+              className={styles.pullToRefreshIndicator}
+              style={{
+                height: `${isRefreshing ? 50 : pullDistance}px`,
+                opacity: isRefreshing ? 1 : Math.min(1, pullDistance / 50),
+                transition: pullDistance === 0 ? "height 0.3s ease, opacity 0.3s ease" : "none"
+              }}
+            >
+              <div className={styles.pullToRefreshSpinner}>
+                {isRefreshing ? (
+                  <span className={styles.spinnerIcon} />
+                ) : (
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    style={{
+                      transform: `rotate(${pullDistance * 4}deg)`,
+                      transition: "transform 0.1s ease"
+                    }}
+                  >
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                  </svg>
+                )}
+                <span>
+                  {isRefreshing
+                    ? "Refreshing suggestions..."
+                    : pullDistance >= 50
+                      ? "Release to refresh"
+                      : "Pull down to refresh"}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className={styles.chatFeedInner}>
             {messages.length === 0 ? (
               // Greeting Empty State (Gemini Style)
