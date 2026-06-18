@@ -107,9 +107,7 @@ const CodeIcon = ({ size = 18 }) => (
 
 const BulbIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="url(#cognix-icon-gradient)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
-    <line x1="9" y1="18" x2="15" y2="18"></line>
-    <line x1="10" y1="22" x2="14" y2="22"></line>
+    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5 M9 18h6 M10 22h4" />
   </svg>
 );
 
