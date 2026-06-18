@@ -37,14 +37,17 @@ export async function POST(req) {
         "You are Cognix, an ultra-premium, professional, and sophisticated AI assistant. " +
         "You possess advanced cognitive reasoning, coding, and creative capabilities. " +
         "Your style is modern, direct, polite, and intellectually engaging. " +
+        "CRITICAL: Keep responses highly concise, efficient, and direct. Avoid long preambles, conversational fluff, or repetition. Get straight to the point unless a comprehensive explanation is specifically requested. " +
         "When explaining concepts, structure your replies beautifully with bullet points or numbers. " +
         "When writing code, always format the response inside code blocks with correct syntax highlights (e.g. ```javascript) and write optimized, readable code with simple code comments."
     });
 
-    // 4. Map client message history to Gemini API format
-    // Gemini roles are strictly 'user' or 'model'. Content must be packaged in parts.
+    // 4. Map client message history to Gemini API format (limiting history to last 6 messages to conserve tokens)
     const latestMessage = messages[messages.length - 1].content;
-    const history = messages.slice(0, -1).map((msg) => {
+    const historyMessages = messages.slice(0, -1);
+    const slicedHistory = historyMessages.slice(-6); // sliding window of 6 messages (3 user, 3 assistant)
+    
+    const history = slicedHistory.map((msg) => {
       // Map 'assistant' role to 'model' for Gemini compatibility
       const role = msg.role === "assistant" || msg.role === "model" ? "model" : "user";
       return {

@@ -1,83 +1,81 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// Standard, high-fidelity developer fallback list in case of network or API limits
-const FALLBACKS = [
+const SUGGESTIONS_POOL = [
   {
     category: "code",
-    prompt: "Autonomous multi-agent coding workflows using LangGraph and hierarchical tool routing"
+    prompt: "Architect an autonomous multi-agent coding workflow using LangGraph, tool calling, and hierarchical routing."
   },
   {
     category: "idea",
-    prompt: "High-performance local RAG architectures using hybrid vector embedding search"
+    prompt: "Design a high-performance local RAG system using vector embeddings, hybrid search, and semantic chunking."
   },
   {
-    category: "book",
-    prompt: "Lightweight 7B model fine-tuning using LoRA adapters for code generation"
+    category: "code",
+    prompt: "Outline a pipeline to fine-tune a lightweight 7B model using LoRA adapters for domain-specific code generation."
   },
   {
     category: "compass",
-    prompt: "Sparse-attention context window scaling metrics for long-context retrieval"
+    prompt: "Design a high-performance local RAG architecture using hybrid sparse-dense vector embeddings."
+  },
+  {
+    category: "book",
+    prompt: "Compare latency and context utilization between FlashAttention-2 and standard Multi-Head Attention mechanisms."
+  },
+  {
+    category: "code",
+    prompt: "Design a structured output generation layer using Pydantic, JSON Schema constraints, and grammar-based sampling."
+  },
+  {
+    category: "compass",
+    prompt: "Optimize LLM context caching for repetitive system prompts using vLLM page attention allocation."
+  },
+  {
+    category: "code",
+    prompt: "Implement a guardrail filter using LlamaGuard and alignment checks to prevent prompt injection attacks."
+  },
+  {
+    category: "idea",
+    prompt: "Architect a scalable vector database sync service using Debezium CDC, Kafka, and Qdrant collections."
+  },
+  {
+    category: "code",
+    prompt: "Design a continuous RLHF pipeline using DPO (Direct Preference Optimization) for fine-tuning reward metrics."
+  },
+  {
+    category: "compass",
+    prompt: "Draft an evaluation protocol for local LLM code completion models using HumanEval metrics and unit tests."
+  },
+  {
+    category: "idea",
+    prompt: "Optimize multi-modal visual embedding parsing for complex technical flowcharts and architectural blueprints."
+  },
+  {
+    category: "code",
+    prompt: "Build a sparse-attention context window loader to process 100k+ token codebases in local developer IDEs."
+  },
+  {
+    category: "compass",
+    prompt: "Design a hybrid semantic chunking parser using sentence boundary splits and token-size threshold overlays."
+  },
+  {
+    category: "code",
+    prompt: "Architect a federated vector index to securely search across isolated private cloud clusters."
+  },
+  {
+    category: "idea",
+    prompt: "Compare performance trade-offs of FP16, INT8, and GGUF quantization formats for local Edge CPU hosting."
   }
 ];
 
 export async function GET() {
   try {
-    const apiKey = process.env.GEMINI_API_KEY || "";
-
-    if (!apiKey) {
-      return Response.json(FALLBACKS);
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
-    const model = genAI.getGenerativeModel({ model: modelName });
-
-    const systemPrompt =
-      "You are a state-of-the-art AI developer suggestions generator. " +
-      "Generate exactly 4 highly advanced, latest AI-related topics or developer concepts for an AI software engineering workspace. " +
-      "These topics must be extremely relevant to modern AI engineering (e.g. multi-agent systems, local LLM fine-tuning, RAG retrieval techniques, vector databases, neural search, context windows, quantization, etc.). " +
-      "CRITICAL: Do NOT generate any topics related to 'HNSW', 'IVF', 'IVF-Flat', or 'indexing comparison'. " +
-      "CRITICAL: The 4 generated concepts MUST feature a balanced variety of categories (e.g. exactly 1 'code', 1 'compass', 1 'book', and 1 'idea' category) - never include duplicate 'code' or 'idea' categories. " +
-      "CRITICAL: The prompt text MUST be phrased in a highly informative presentation format as a concise, expert developer topic or concept rather than a conversational question. " +
-      "Example of informative presentation: 'Autonomous coding workflows using LangGraph and tool calling' instead of 'How do I build an autonomous workflow...'. " +
-      "Keep each prompt concise, professional, and under 12 words. " +
-      "Format your response strictly as a JSON array of 4 objects. Each object MUST have: " +
-      '- "prompt": The concise, informative AI developer concept. ' +
-      '- "category": Either "code" or "idea" or "compass" or "book". ' +
-      "Return ONLY the raw JSON array (do NOT wrap it in markdown code blocks like ```json or backticks, just raw text starting with [ and ending with ]).";
-
-    const result = await model.generateContent(systemPrompt);
-    const text = result.response.text().trim();
-
-    // Resilient Regex extraction to isolate the JSON array from any potential markdown wrapper or conversational text
-    const jsonMatch = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
-    if (jsonMatch) {
-      try {
-        const parsed = JSON.parse(jsonMatch[0]);
-        if (Array.isArray(parsed) && parsed.length === 4) {
-          return Response.json(parsed);
-        }
-      } catch (innerParseError) {
-        console.warn("Suggestions inner JSON parse failed:", innerParseError);
-      }
-    }
-
-    // Try parsing the direct response text as fallback
-    try {
-      const parsed = JSON.parse(text.replace(/^```(json)?/, "").replace(/```$/, "").trim());
-      if (Array.isArray(parsed) && parsed.length === 4) {
-        return Response.json(parsed);
-      }
-    } catch (parseError) {
-      console.warn("Suggestions direct parse fallback failed:", parseError);
-    }
-
-    return Response.json(FALLBACKS);
+    // Shuffle suggestions pool and return 4 items instantly without calling the Gemini API.
+    // This saves tokens, preserves API request quotas, and improves load time to 0ms.
+    const shuffled = [...SUGGESTIONS_POOL].sort(() => 0.5 - Math.random());
+    return Response.json(shuffled.slice(0, 4));
   } catch (error) {
-    console.error("Suggestions API main fetch error:", error);
-    return Response.json(FALLBACKS);
+    console.error("Suggestions API error:", error);
+    return Response.json(SUGGESTIONS_POOL.slice(0, 4));
   }
 }
