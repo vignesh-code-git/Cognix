@@ -906,7 +906,7 @@ You have reached the limits of the free standard developer tier.
           </div>
 
           {/* Search Input (Only shown when sidebar is expanded) */}
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || mobileSidebarOpen) && (
             <div className={styles.searchWrapper}>
               <span className={styles.searchIconWrapper}>
                 <SearchIcon />
@@ -927,7 +927,7 @@ You have reached the limits of the free standard developer tier.
           )}
 
           {/* Scrollable Conversation Tabs List */}
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || mobileSidebarOpen) && (
             <div className={styles.tabsContainer}>
               {conversations
                 .filter((c) => c.messages.length > 0)
@@ -986,7 +986,7 @@ You have reached the limits of the free standard developer tier.
 
         {/* Sidebar Footer */}
         <div className={styles.sidebarFooter}>
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || mobileSidebarOpen) && (
             <div className={styles.menuItem} style={{ cursor: "default" }}>
               <span className={styles.menuItemIcon}>
                 <SparkleIcon size={22} />
