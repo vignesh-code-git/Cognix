@@ -29,8 +29,8 @@ export async function POST(req) {
     // 3. Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Using configurable model (defaulting to stable gemini-1.5-flash to bypass 2.5 limits)
-    const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+    // Using configurable model (defaulting to unthrottled gemini-2.5-flash-lite)
+    const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
     const model = genAI.getGenerativeModel({
       model: modelName,
       systemInstruction:
