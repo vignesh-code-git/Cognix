@@ -306,7 +306,6 @@
   background-color: var(--bg-workspace);
 }
 
-/* Top Header */
 .header {
   height: var(--header-height);
   padding: 0 1.5rem;
@@ -315,7 +314,14 @@
   justify-content: space-between;
   background-color: var(--bg-workspace);
   z-index: 50;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.01);
+  border-bottom: none;
+}
+
+.headerTitleText {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.2px;
 }
 
 .headerTitleGroup {
@@ -964,22 +970,31 @@
   }
 
   .suggestionGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.65rem;
   }
 
   .suggestionCard {
-    min-height: auto;
-    padding: 1rem;
-    flex-direction: row;
-    align-items: center;
+    height: 110px;
+    padding: 0.85rem;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: space-between;
   }
 
+  .suggestionPrompt {
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+  }
+
   .suggestionHeader {
-    align-self: center;
+    align-self: flex-end;
     margin: 0;
     flex-shrink: 0;
+    width: 24px;
+    height: 24px;
   }
 
   .messageBubbleUser {
