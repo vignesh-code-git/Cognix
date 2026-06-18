@@ -1,0 +1,182 @@
+:root {
+  /* Carbon Gray Gemini Color System */
+  --bg-workspace: #0f0f11;
+  --bg-sidebar: #131314;
+  --bg-item-hover: #1e1f20;
+  --bg-item-active: #2e3032;
+  
+  --primary-blue: #4285f4;
+  --primary-blue-hover: #2b76f6;
+  --accent-purple: #c5a3ff;
+  
+  --text-primary: #e3e3e3;
+  --text-secondary: #c4c7c5;
+  --text-muted: #80868b;
+  
+  --glass-border: rgba(255, 255, 255, 0.04);
+  --glass-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  
+  --sidebar-expanded-width: 280px;
+  --sidebar-collapsed-width: 56px;
+  --header-height: 56px;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-pill: 32px;
+  
+  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono), monospace;
+  
+  --transition-fast: 0.15s cubic-bezier(0.2, 0, 0, 1);
+  --transition-normal: 0.25s cubic-bezier(0.2, 0, 0, 1);
+  --transition-slow: 0.35s cubic-bezier(0.2, 0, 0, 1);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  width: 100vw;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-workspace);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  position: relative;
+  display: flex;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Selection */
+::selection {
+  background: rgba(168, 199, 250, 0.24);
+  color: #ffffff;
+}
+
+/* Google Gemini Signature Gradient Animation */
+@keyframes geminiGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gemini-gradient-text {
+  background: linear-gradient(
+    74deg,
+    #4285f4 0%,
+    #9b72cb 18%,
+    #d96570 38%,
+    #e2a05d 58%,
+    #d96570 78%,
+    #9b72cb 90%,
+    #4285f4 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: geminiGradient 10s linear infinite;
+}
+
+/* Typography styles for spacious messages */
+p {
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+  font-size: 1.025rem;
+  color: var(--text-primary);
+  letter-spacing: -0.05px;
+}
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code Blocks & Inlines inside messages */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  color: #f1f5f9;
+}
+
+pre {
+  background: #1e1f20;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #e3e3e3;
+}
+
+/* List Styles */
+ul, ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+li {
+  margin-bottom: 0.35rem;
+  line-height: 1.6;
+}
+li:last-child {
+  margin-bottom: 0;
+}
+
+/* Page entrance animations */
+@keyframes entrance {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-entrance {
+  animation: entrance 0.3s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
